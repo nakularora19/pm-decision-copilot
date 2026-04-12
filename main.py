@@ -11,15 +11,23 @@ from core.orchestrator import Orchestrator
 def main():
     print("PM Decision Copilot")
     print("=" * 40)
-    problem = input("Describe the PM decision or problem you need help with:\n> ").strip()
+
+    problem = input("Problem:\n> ").strip()
     if not problem:
-        print("No input provided. Exiting.")
+        print("No problem provided. Exiting.")
         return
 
+    context = input("\nContext (optional — press Enter to skip):\n> ").strip()
+    constraints = input("\nConstraints (optional — press Enter to skip):\n> ").strip()
+
+    user_input = f"Problem: {problem}"
+    if context:
+        user_input += f"\nContext: {context}"
+    if constraints:
+        user_input += f"\nConstraints: {constraints}"
+
     orchestrator = Orchestrator()
-    result = orchestrator.run(problem)
-    print("\n--- Final Recommendation ---")
-    print(result)
+    orchestrator.run(user_input)
 
 
 if __name__ == "__main__":
