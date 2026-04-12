@@ -6,19 +6,23 @@ A multi-agent AI framework that helps product managers structure complex decisio
 
 ## Why I Built This
 
-I'm a product manager with 10+ years building marketplace and search products. I found myself facing the same pattern repeatedly -- a vague question from a stakeholder, pressure to decide fast, and AI tools that gave me answers without helping me think.
+I'm a product manager with 10+ years of experience working on marketplace, search, and monetization problems. I kept running into the same pattern: a vague question from a stakeholder, pressure to decide fast, and AI tools that gave answers without helping me think.
 
-I built this framework to fix that for myself first. I've used it on real decisions -- sponsored ranking strategy, feature prioritization, monetization tradeoffs -- and found that the critique loop in particular changed how I reason through hard problems. It forces explicit tradeoffs before you commit to a recommendation.
+I built this framework to solve that for myself first. I wanted a system that could take a messy product question, surface assumptions, force explicit tradeoffs, critique weak reasoning, and improve the recommendation before I acted on it.
 
-After using it internally, I walked a few PM peers through the workflow. Several of them have since adopted versions of it within their own teams. That response made me want to open-source it -- so any PM, at any company, can run structured multi-agent reasoning on their hardest decisions without needing an engineering team behind them.
+I've used versions of this workflow on generalized decision types such as ranking tradeoffs, feature prioritization, and monetization vs user experience questions. The critique loop in particular changed how I reason through hard problems because it forces weaknesses to become visible before a recommendation feels complete.
 
-This is not a polished product. It is a working framework that I use and believe in.
+After sharing the workflow with a few PM peers, I saw that the structure itself was useful beyond my own use cases. That made me want to open-source it so other PMs can run structured decision reasoning without needing a large engineering setup behind them.
+
+This is not a polished product. It is a working system that I use, believe in, and want to keep improving.
+
+All examples in this repository are generalized and sanitized. They do not reflect proprietary systems, confidential metrics, or company-specific implementation details.
 
 ---
 
 ## The Problem
 
-Product managers face decisions with incomplete information, competing stakeholder goals, and pressure for speed. Most AI tools generate answers quickly but skip explicit reasoning, undocumented tradeoffs, and shared clarity. This framework treats AI as a decision support layer -- not an answer machine.
+Product managers face decisions with incomplete information, competing stakeholder goals, and pressure for speed. Most AI tools generate answers quickly but skip explicit reasoning, undocumented tradeoffs, and shared clarity. This framework treats AI as a decision support layer, not an answer machine.
 
 ---
 
@@ -26,9 +30,30 @@ Product managers face decisions with incomplete information, competing stakehold
 
 Three specialized agents run sequentially:
 
-- **Discovery Agent** -- reframes the raw problem, surfaces hidden assumptions, identifies real constraints
-- **Analysis Agent** -- generates 3 distinct options with pros/cons, recommends a path with explicit tradeoffs and risks
-- **Critique Agent** -- scores the reasoning quality 0-10 across three dimensions: tradeoff completeness, recommendation clarity, risk realism. If the overall score is below 7.0, sends specific feedback back to the Analysis Agent and triggers a revision. Max 2 revision cycles.
+- **Discovery Agent** : reframes the raw problem, surfaces hidden assumptions, identifies real constraints
+- **Analysis Agent** : generates 3 distinct options with pros/cons, recommends a path with explicit tradeoffs and risks
+- **Critique Agent** : scores the reasoning quality 0-10 across three dimensions: tradeoff completeness, recommendation clarity, risk realism. If the overall score is below 7.0, sends specific feedback back to the Analysis Agent and triggers a revision. Max 2 revision cycles.
+
+---
+
+## What Makes This Different
+
+Most AI tools generate answers in a single pass. They may sound confident, but they often skip explicit reasoning, undocumented tradeoffs, and self-evaluation.
+
+This system is different in three ways:
+
+1. **Separation of reasoning stages**
+   Discovery, analysis, and critique are handled independently instead of being collapsed into one prompt.
+
+2. **Explicit evaluation of decision quality**
+   The critique agent scores outputs across tradeoff completeness, recommendation clarity, and risk realism.
+
+3. **Iterative improvement loop**
+   If the reasoning is weak, the system sends targeted feedback back to the analysis stage and revises the output before finalizing it.
+
+The goal is not to make AI sound smarter.
+
+The goal is to make product reasoning more explicit, reviewable, and improvable.
 
 ---
 
@@ -52,11 +77,11 @@ Final Output     →  Saved to logs/
 
 ## Example Output
 
-From [`examples/sponsored_ranking_decision.md`](examples/sponsored_ranking_decision.md) -- a real pipeline run on a sponsored search ranking decision:
+From [`examples/sponsored_ranking_decision.md`](examples/sponsored_ranking_decision.md) -- pipeline run on a sponsored search ranking decision:
 
 **Recommendation**
 
-> Graduated Prominence with Performance Gates is the optimal choice because it provides measurable revenue growth while protecting user experience through quantified guardrails. This approach allows for systematic testing of increased sponsored prominence (targeting 25-40% revenue uplift) while maintaining user satisfaction above 85% and search abandonment below 15%.
+> Graduated Prominence with Performance Gates is the optimal choice because it provides measurable revenue growth while protecting user experience through quantified guardrails. This approach allows for systematic testing of increased sponsored prominence while maintaining clearly defined user experience guardrails and rollback criteria.
 
 **Critique Scores**
 
@@ -120,6 +145,8 @@ pm-decision-copilot/
 
 ## Design Decisions
 
+This system intentionally prioritizes decision clarity over generative flexibility.
+
 Four deliberate tradeoffs worth understanding before you extend this:
 
 **Three separate agents vs one prompt**
@@ -136,6 +163,19 @@ No abstraction layers. The agent logic is plain Python and direct Anthropic SDK 
 
 ---
 
+## When This Should Not Be Used
+
+This system is not designed for:
+
+- highly technical system architecture decisions
+- legal, medical, or policy decisions requiring domain experts
+- situations where live data analysis is required for accuracy
+- fully autonomous decision-making without human review
+
+It is most useful for early- to mid-stage product decisions where ambiguity is high and structured reasoning matters more than perfect certainty.
+
+---
+
 ## Background
 
 This framework was developed through applied experimentation with agentic AI workflows and refined through sessions with product teams at enterprise organizations. It is intentionally open-source so any PM team can clone and run it without requiring engineering support.
@@ -144,7 +184,9 @@ This framework was developed through applied experimentation with agentic AI wor
 
 ## Privacy
 
-All examples are sanitized. No proprietary data, internal metrics, or confidential business context is included anywhere in this repository.
+All examples are sanitized and intentionally generalized.
+
+No personal information, proprietary data, internal metrics, confidential business context, or company-identifying implementation details are included anywhere in this repository.
 
 ---
 
